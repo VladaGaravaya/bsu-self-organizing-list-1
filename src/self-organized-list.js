@@ -120,7 +120,17 @@ class SelfOrganizedList {
     }
 
     reorganize(data) {
-
+        var node = new Node(data);
+        this.moveToFront(node);
+        var newNode = this.head;
+        while(data !== newNode.data) {
+            newNode = newNode.next;
+        }
+        if(newNode !== null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
