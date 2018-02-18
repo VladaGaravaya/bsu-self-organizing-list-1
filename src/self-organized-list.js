@@ -1,4 +1,4 @@
-        class Node {
+class Node {
     constructor(data) {
         this.data = data;
         this.next = null;
@@ -28,9 +28,6 @@ class SelfOrganizedList {
     }
 
     size() {
-        if(this.length===0){
-            return 0;
-        }
         return this.length;
     }
 
@@ -43,26 +40,38 @@ class SelfOrganizedList {
             return null;
         }
 
-        while (count < index) {
-            node = node.next;
-            count++;
+        for(;count<index;count++){
+            node=node.next;
         }
         return node.data;
     }
 
     findNode(data) {
         var node = this.head;
-        while(data !== node.data) {
-            node = node.next;
+        var flag=true;
+        while(flag/*&&(node.next||node===this.tail)*/){
+            if(node.data===data){
+                flag=false;
+            }
+            else {
+                if(node===this.tail){
+                    break;
+                }
+                else {
+                    node=node.next;
+                }
+            }
         }
-        if(node !== null) {
+        if(flag){
+            return null;
+        }
+        else {
             return node;
         }
-        return null;
     }
 
     toArray() {
-        var arr,i,
+        var arr=new Array(),i,
             node=this.head;
         if(this.length === 0) {
             return arr=[];
@@ -82,10 +91,16 @@ class SelfOrganizedList {
             afterNodeToDelete= null,
             nodeToDelete = null,
             deletedNode = null;
-
-       /* if(this.length === 1) {
-            return deletedNode;
-        }*/
+        if(index<0||index>this.length){
+            return null;
+        }
+       if(this.tail===this.head&&index===0){
+           deletedNode=this.tail;
+           this.tail=null;
+           this.head=null;
+           this.length=0;
+           return deletedNode;
+       }
 
         if (index === 0) {
             this.head = currentNode.next;
@@ -112,20 +127,53 @@ class SelfOrganizedList {
     }
 
     moveToFront(node) {
-        if(this.length === 1) {
+        if(this.length === 1||this.head===node) {
             return node;
+        } else {
+            if (this.tail === node) {
+                var beforeNode = node.prev;
+                node.prev = null;
+                node.next = this.heard;
+                this.heard = node;
+                beforeNode.next = null;
+                this.tail = beforeNode;
+                return node;
+            }
+            else {
+                var beforeNode = node.prev,
+                    afterNode = node.next;
+                beforeNode.next = afterNode;
+                afterNode.prev = beforeNode;
+                node.next = this.head;
+                node.prev = null;
+                this.head = node;
+                return node;
+            }
+            }
         }
-        this.removeAt(0);
+
+
+
+    reorganize(data){
+        var node = this.findNode(data);
+        if(node === this.head) {
+            return true;
+        }
+        if(this.length === 0) {
+            return false;
+        }
+        if(node !== null) {
+            this.moveToFront(node);
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
-    reorganize(data) {
-
     }
 
-}
-
-module.exports = {
-    SelfOrganizedList,
-    Node
-};
+    module.exports = {
+        SelfOrganizedList,
+        Node
+    };
