@@ -1,3 +1,4 @@
+
 class Node {
     constructor(data) {
         this.data = data;
@@ -15,7 +16,7 @@ class SelfOrganizedList {
 
     insert(data) {
         var node = new Node(data);
-        if(this.length == 0) {
+        if(this.length === 0) {
             this.head = node;
             this.tail = node;
         }
@@ -35,53 +36,57 @@ class SelfOrganizedList {
         var node = this.head,
             count=0,
             length = this.length;
-
         if (length === 0 || index < 0 || index > this.length) {
             return null;
         }
 
-        for(;count<index;count++){
+        for( ;count<index; count++){
             node=node.next;
         }
         return node.data;
     }
 
     findNode(data) {
-        var node = this.head;
-        var flag=true;
-        while(flag/*&&(node.next||node===this.tail)*/){
-            if(node.data===data){
-                flag=false;
-            }
-            else {
-                if(node===this.tail){
-                    break;
+        if (this.length > 0) {
+            var node = this.head;
+            var flag=true;
+            while(flag){
+                if(node.data===data){
+                    flag=false;
                 }
                 else {
-                    node=node.next;
+                    if(node===this.tail){
+                       break;
+                   }
+                    else {
+                        node=node.next;
+                    }
                 }
             }
-        }
-        if(flag){
+            if(flag){
+                return null;
+            }
+            else {
+                return node;
+            }
+        } else {
             return null;
-        }
-        else {
-            return node;
         }
     }
 
     toArray() {
-        var arr=new Array(),i,
-            node=this.head;
+        var arr = [],
+            node=this.head,
+            i;
         if(this.length === 0) {
-            return arr=[];
+            return arr;
         } else {
             for(i=0; i < this.length; i++) {
                     arr[i]=node.data;
                     node=node.next;
             }
-        } return arr;
-
+        }
+        return arr;
     }
 
     removeAt(index) {
@@ -91,16 +96,18 @@ class SelfOrganizedList {
             afterNodeToDelete= null,
             nodeToDelete = null,
             deletedNode = null;
-        if(index<0||index>this.length){
+
+        if(index < 0||index > this.length){
             return null;
         }
-       if(this.tail===this.head&&index===0){
+
+        if(this.tail === this.head && index===0){
            deletedNode=this.tail;
            this.tail=null;
            this.head=null;
            this.length=0;
            return deletedNode;
-       }
+        }
 
         if (index === 0) {
             this.head = currentNode.next;
@@ -130,29 +137,28 @@ class SelfOrganizedList {
         if(this.length === 1||this.head===node) {
             return node;
         } else {
+            var beforeNode = node.prev;
             if (this.tail === node) {
-                var beforeNode = node.prev;
                 node.prev = null;
-                node.next = this.heard;
-                this.heard = node;
+                node.next = this.head;
+                this.head.prev = node;
+                this.head = node;
                 beforeNode.next = null;
                 this.tail = beforeNode;
                 return node;
             }
             else {
-                var beforeNode = node.prev,
-                    afterNode = node.next;
+                var  afterNode = node.next;
                 beforeNode.next = afterNode;
                 afterNode.prev = beforeNode;
                 node.next = this.head;
                 node.prev = null;
+                this.head.prev = node;
                 this.head = node;
                 return node;
             }
-            }
         }
-
-
+    }
 
     reorganize(data){
         var node = this.findNode(data);
@@ -168,10 +174,8 @@ class SelfOrganizedList {
         } else {
             return false;
         }
-
     }
-
-    }
+}
 
     module.exports = {
         SelfOrganizedList,
